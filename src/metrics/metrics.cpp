@@ -1,42 +1,61 @@
-#include <iostream>
-#include <vector>
-#include <cmath>   
-#include <numeric> 
+#include "../include/metrics/metrics.h"
+using namespace std;
 
-
-double calculate_mae(const std::vector<double> &actual, const std::vector<double> &predicted)
+double MAE(const vector<double> &y_true, const vector<double> &y_pred)
 {
-    double sum_error = 0.0;
-    for (size_t i = 0; i < actual.size(); ++i)
+    double sum = 0;
+    for (int i = 0; i < y_true.size(); i++)
     {
-        sum_error += std::abs(actual[i] - predicted[i]);
+        sum += abs(y_true[i] - y_pred[i]);
     }
-    return sum_error / actual.size();
+    return sum / y_true.size();
 }
 
-
-double calculate_rmae(const std::vector<double> &actual, const std::vector<double> &predicted)
+double MSE(const vector<double> &y_true, const vector<double> &y_pred)
 {
-    double sum_abs_error = 0.0;
-    double sum_actual = 0.0;
-
-    for (size_t i = 0; i < actual.size(); ++i)
+    double sum = 0;
+    for (int i = 0; i < y_true.size(); i++)
     {
-        sum_abs_error += std::abs(actual[i] - predicted[i]);
-        sum_actual += std::abs(actual[i]);
+        double diff = y_true[i] - y_pred[i];
+        sum += diff * diff;
     }
-
-    
-    return (sum_actual == 0) ? 0.0 : (sum_abs_error / sum_actual);
+    return sum / y_true.size();
 }
 
-double calculate_mse(const std::vector<double> &actual, const std::vector<double> &predicted)
+double RMSE(const vector<double> &y_true, const vector<double> &y_pred)
 {
-    double sum_error = 0.0;
-    for (size_t i = 0; i < actual.size(); ++i)
+    return sqrt(MSE(y_true, y_pred));
+}
+
+double R2Score(const vector<double> &y_true, const vector<double> &y_pred)
+{
+    int n = y_true.size();
+    double mean_y = 0;
+    for (int i = 0; i < n; i++)
     {
-        double error = actual[i] - predicted[i];
-        sum_error += error * error;
+        mean_y += y_true[i];
     }
-    return sum_error / actual.size();
+    mean_y /= n;
+
+    double ss_tot = 0;
+    double ss_res = 0;
+    for (int i = 0; i < n; i++)
+    {
+        ss_tot += (y_true[i] - mean_y) * (y_true[i] - mean_y);
+        ss_res += (y_true[i] - y_pred[i]) * (y_true[i] - y_pred[i]);
+    }
+    double r2 = 1 - (ss_res / ss_tot);
+    return r2;
+}
+
+double AdjustedR2Score(const vector<double> &y_true, const vector<double> &y_pred, int num_features)
+{
+    int n = y_true.size();
+    if (n == num_features + 1)
+    {
+        return 0.0; // Avoid division by zero
+    }
+    double r2 = R2Score(y_true, y_pred);
+    double adjusted_r2 = 1 - (1 - r2) * (n - 1) / (n - num_features - 1);
+    return adjusted_r2;
 }

@@ -1,7 +1,19 @@
+#pragma once
+#include <vector>
+using namespace std;
 
+double MAE(const vector<double> &y_true,
+           const vector<double> &y_pred);
 
-double calculate_mae(const std::vector<double> &actual, const std::vector<double> &predicted);
+double MSE(const vector<double> &y_true,
+           const vector<double> &y_pred);
 
-double calculate_rmae(const std::vector<double> &actual, const std::vector<double> &predicted);
+double RMSE(const vector<double> &y_true,
+            const vector<double> &y_pred);
 
-double calculate_mse(const std::vector<double> &actual, const std::vector<double> &predicted);
+double R2Score(const vector<double> &y_true,
+               const vector<double> &y_pred);
+
+double AdjustedR2Score(const vector<double> &y_true,
+                       const vector<double> &y_pred,
+                       int num_features);
