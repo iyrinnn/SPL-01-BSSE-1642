@@ -1,18 +1,45 @@
+#pragma once
 #include <vector>
+#include <set>
+#include <string>
+
 using namespace std;
-class BaseDecisionTree
+
+class DecisionTree
 {
-protected:
-    // Pure Virtual Function: Forces children to implement their own math
-    virtual double calculate_impurity(const vector<double> &y) = 0;
-    virtual double calculate_leaf_value(const std::vector<double> &y) = 0;
+public:
+    struct Node
+    {
+        double value; // Mean for Regressor, Mode for Classifier
+        int featureIndex;
+        double threshold;
+        Node *left;
+        Node *right;
+        bool isLeaf;
+    };
+
+private:
+    Node *root;
+    string criterion; // "mse", "mae", "poisson" // string criterion; // "gini", "entropy"
+    int max_depth;
+    int min_sample_split;
+    int max_leaf_nodes;
+    float min_impurity_decrease;
+
+    // Core tree-building functions
+    Node *buildTree(vector<vector<double>> &X, const vector<double> &y, int depth);
+    void findBestSplit(vector<vector<double>> &X, const vector<double> &y,
+                       int &bestFeature, double &bestThreshold);
+    double leafValue(const vector<double> &y);
+    bool stoppingCriteria(int depth, int numSamples);
+    void deleteTree(Node *node);
 
 public:
-    BaseDecisionTree(int depth, int split) : max_depth(depth), min_sample_split(split), root(nullptr) {}
+    // Constructor & Destructor
+    DecisionTree(int depth = 5, int minSamplesSplit = 2);
 
-    // Shared logic: Traversing the tree to predict is the same for both
-    double predict_single(const std::vector<double> &x, Node *node)
-
-        // Common Destructor to clean up memory
-        void deleteTree(Node *node);
+    // Main interface
+    void fit(vector<vector<double>> &X, const vector<double> &y);
+    double predict(const vector<double> &featureRow);
+    vector<double> predict(const vector<vector<double>> &featureMatrix);
 };
