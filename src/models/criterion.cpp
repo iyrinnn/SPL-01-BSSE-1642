@@ -10,8 +10,8 @@ double average(const vector<double> &values)
     return sum / values.size();
 }
 
-// Simple selection-based median (no sort, no algorithm)
-static double median(const vector<double> &values)
+
+double median(const vector<double> &values)
 {
     int n = values.size();
     vector<double> temp = values;
@@ -151,22 +151,9 @@ double MAE::leaf_value(const vector<double> &target_values)
 
 double Poisson::impurity(const std::vector<double> &targets)
 {
-    double mean_val = average(targets);
-    if (mean_val <= 0)
-        return 0.0;
-
-    double sum = 0.0;
-    for (const auto &val : targets)
-    {
-        if (val > 0)
-        {
-            sum += val * log(val / mean_val) - (val - mean_val);
-        }
-    }
-    return sum / targets.size();
 }
 
 double Poisson::leaf_value(const std::vector<double> &targets)
 {
-    return average(targets);
+   
 }

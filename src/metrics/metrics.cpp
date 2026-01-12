@@ -1,4 +1,4 @@
-#include "../include/metrics/metrics.h"
+#include "../../include/metrics/metrics.h"
 using namespace std;
 
 double MAE(const vector<double> &y_true, const vector<double> &y_pred)
@@ -53,7 +53,7 @@ double AdjustedR2Score(const vector<double> &y_true, const vector<double> &y_pre
     int n = y_true.size();
     if (n == num_features + 1)
     {
-        return 0.0; // Avoid division by zero
+        return 0.0;
     }
     double r2 = R2Score(y_true, y_pred);
     double adjusted_r2 = 1 - (1 - r2) * (n - 1) / (n - num_features - 1);

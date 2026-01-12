@@ -18,7 +18,6 @@ DecisionTree::Node *DecisionTree::buildTree(vector<vector<double>> &X, const vec
 
     findBestSplit(X, y, bestFeature, bestThreshold);
 
-    // If no split improves impurity, make leaf
     if (bestFeature == -1)
     {
         Node *leaf = new Node();
@@ -29,7 +28,6 @@ DecisionTree::Node *DecisionTree::buildTree(vector<vector<double>> &X, const vec
         return leaf;
     }
 
-    // Split data into left/right based on threshold
     vector<vector<double>> X_left, X_right;
     vector<double> y_left, y_right;
     for (int i = 0; i < X.size(); i++)
@@ -46,12 +44,11 @@ DecisionTree::Node *DecisionTree::buildTree(vector<vector<double>> &X, const vec
         }
     }
 
-    // Create node and recursively build children
     Node *node = new Node();
     node->featureIndex = bestFeature;
     node->threshold = bestThreshold;
     node->isLeaf = false;
-    node->value = 0.0; // unused for non-leaf
+    node->value = 0.0;
     node->left = buildTree(X_left, y_left, depth + 1);
     node->right = buildTree(X_right, y_right, depth + 1);
 
@@ -64,7 +61,6 @@ void DecisionTree::findBestSplit(vector<vector<double>> &X, const vector<double>
 
     double bestScore = 10e9;
 
-    // Choose criterion object
     Criterion *crit = nullptr;
     if (criterion == "mse")
         crit = new MSE();
@@ -76,10 +72,8 @@ void DecisionTree::findBestSplit(vector<vector<double>> &X, const vector<double>
         crit = new Entropy();
     // if criterion not recognized, default to MSE ...or something we need a else statement here
 
-    // Loop through all features
     for (int featureIndex = 0; featureIndex < X[0].size(); featureIndex++)
     {
-        // Get all unique values for this feature without using set
         vector<double> uniqueValues;
         for (int i = 0; i < X.size(); i++)
         {
@@ -95,7 +89,7 @@ void DecisionTree::findBestSplit(vector<vector<double>> &X, const vector<double>
             if (!found)
                 uniqueValues.push_back(X[i][featureIndex]);
         }
-        // Try splitting at each unique value
+
         for (const auto &threshold : uniqueValues)
         {
             vector<double> leftY, rightY;
@@ -111,13 +105,12 @@ void DecisionTree::findBestSplit(vector<vector<double>> &X, const vector<double>
                 }
             }
 
-            // Calculate impurity based on the criterion
+            // if (leftY.size() == 0 || rightY.size() == 0)
 
             double score = (leftY.size() * crit->impurity(leftY) +
                             rightY.size() * crit->impurity(rightY)) /
                            y.size();
 
-            // Update best split if current score is better
             if (score < bestScore)
             {
                 bestScore = score;

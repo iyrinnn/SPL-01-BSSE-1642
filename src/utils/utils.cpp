@@ -1,4 +1,5 @@
-#include "utils.h"
+using namespace std;
+#include "../../include/utils/utils.h"
 
 int absInt(int x)
 {
@@ -12,8 +13,7 @@ void swapInt(int &a, int &b)
     b = temp;
 }
 
-// ----------------- Binary Search -----------------
-int binarySearch(const std::vector<int> &vec, int low, int high, int target)
+int binarySearch(const vector<int> &vec, int low, int high, int target)
 {
     if (low > high)
         return -1;
@@ -28,8 +28,7 @@ int binarySearch(const std::vector<int> &vec, int low, int high, int target)
         return binarySearch(vec, low, mid - 1, target);
 }
 
-// ----------------- QuickSort -----------------
-int partition(std::vector<int> &arr, int st, int end)
+int partition(vector<int> &arr, int st, int end)
 {
     int pivot = arr[end];
     int i = st - 1;
@@ -46,7 +45,7 @@ int partition(std::vector<int> &arr, int st, int end)
     return i + 1;
 }
 
-void quickSort(std::vector<int> &arr, int st, int end)
+void quickSort(vector<int> &arr, int st, int end)
 {
     if (st < end)
     {
@@ -56,11 +55,64 @@ void quickSort(std::vector<int> &arr, int st, int end)
     }
 }
 
-// ----------------- Split -----------------
-std::vector<std::string> split(const std::string &s, char delimiter)
+int partitionD(vector<double> &arr, int st, int end)
 {
-    std::vector<std::string> result;
-    std::string temp;
+    double pivot = arr[end];
+    int i = st - 1;
+
+    for (int j = st; j < end; j++)
+    {
+        if (arr[j] < pivot)
+        {
+            i++;
+            swap(arr[i], arr[j]);
+        }
+    }
+    swap(arr[i + 1], arr[end]);
+    return i + 1;
+}
+
+void quickSort(vector<double> &arr, int st, int end)
+{
+    if (st < end)
+    {
+        int piv = partitionD(arr, st, end);
+        quickSort(arr, st, piv - 1);
+        quickSort(arr, piv + 1, end);
+    }
+}
+
+int partitionPair(vector<pair<double, int>> &arr, int st, int end)
+{
+    double pivot = arr[end].first;
+    int i = st - 1;
+
+    for (int j = st; j < end; j++)
+    {
+        if (arr[j].first < pivot)
+        {
+            i++;
+            swap(arr[i], arr[j]);
+        }
+    }
+    swap(arr[i + 1], arr[end]);
+    return i + 1;
+}
+
+void quickSort(vector<pair<double, int>> &arr, int st, int end)
+{
+    if (st < end)
+    {
+        int piv = partitionPair(arr, st, end);
+        quickSort(arr, st, piv - 1);
+        quickSort(arr, piv + 1, end);
+    }
+}
+
+vector<string> split(const string &s, char delimiter)
+{
+    vector<string> result;
+    string temp;
 
     for (char c : s)
     {
@@ -78,7 +130,6 @@ std::vector<std::string> split(const std::string &s, char delimiter)
     return result;
 }
 
-// ----------------- Stack Implementation -----------------
 Stack::Stack(int capacity)
 {
     arr.reserve(capacity);
@@ -109,10 +160,9 @@ bool Stack::isEmpty()
 
 bool Stack::isFull()
 {
-    return false; // vector expands dynamically
+    return false;
 }
 
-// ----------------- Queue Implementation -----------------
 Queue::Queue(int cap)
 {
     capacity = cap;

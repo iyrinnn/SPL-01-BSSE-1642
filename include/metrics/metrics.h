@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <cmath>
 using namespace std;
 
 double MAE(const vector<double> &y_true,

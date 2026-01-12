@@ -1,6 +1,8 @@
 #pragma once
 #include <vector>
 #include <string>
+#include <cmath>
+#include "../utils/utils.h"
 using namespace std;
 
 class SimpleImputer

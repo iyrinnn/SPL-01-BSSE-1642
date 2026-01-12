@@ -1,10 +1,12 @@
+#pragma once
+#include <vector>
+#include <string>
+using namespace std;
 
-isMissing();
-dropMissing();
-fillMissing()
-
-    simpleImputer();
-
-KNNImputer();
-
-IterativeImputer();
+class MissingValuesUtils
+{
+public:
+    static bool isMissing(string &value);
+    static void dropMissing(vector<vector<string>> &dataset);
+    static void fillMissing(vector<vector<string>> &dataset, string fillValue);
+};

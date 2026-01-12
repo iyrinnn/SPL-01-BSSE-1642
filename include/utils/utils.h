@@ -3,17 +3,20 @@
 
 #include <vector>
 #include <string>
+using namespace std;
 
 int absInt(int x);
 void swapInt(int &a, int &b);
 int binarySearch(const std::vector<int> &vec, int low, int high, int target);
-void quickSort(std::vector<int> &arr, int st, int end);
-std::vector<std::string> split(const std::string &s, char delimiter);
+void quickSort(vector<int> &arr, int st, int end);
+void quickSort(vector<double> &arr, int st, int end);
+void quickSort(vector<pair<double, int>> &arr, int st, int end);
+vector<string> split(const string &s, char delimiter);
 
 class Stack
 {
 private:
-    std::vector<int> arr;
+    vector<int> arr;
 
 public:
     Stack(int capacity = 100);
