@@ -10,3 +10,7 @@ public:
     static void dropMissing(vector<vector<string>> &dataset);
     static void fillMissing(vector<vector<string>> &dataset, string fillValue);
 };
+
+string standardizeCategory(string value);
+void cleanCategoricalColumns(vector<vector<string>> &data,
+                             vector<int> categoricalCols);

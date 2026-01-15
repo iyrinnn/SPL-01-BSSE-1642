@@ -16,7 +16,7 @@ void SimpleImputer::fit(const vector<vector<double>> &data)
     {
         for (int j = 0; j < numColumns; j++)
         {
-            if (row[j] != missingValue)
+            if (!isnan(row[j]))
             {
                 columnMeans[j] += row[j];
                 count[j]++;
@@ -42,7 +42,7 @@ void SimpleImputer::transform(vector<vector<double>> &data)
     {
         for (int j = 0; j < numColumns; j++)
         {
-            if (row[j] == missingValue)
+            if (isnan(row[j]))
             {
                 row[j] = columnMeans[j];
             }
@@ -57,7 +57,7 @@ double KNNImputer::distance(const vector<double> &a, const vector<double> &b)
 
     for (int i = 0; i < a.size(); i++)
     {
-        if (a[i] != missingValue && b[i] != missingValue)
+        if (!isnan(a[i]) && !isnan(b[i]))
         {
             sum += (a[i] - b[i]) * (a[i] - b[i]);
             count++;
@@ -83,8 +83,6 @@ vector<int> KNNImputer::findKNearestNeighbors(const vector<vector<double>> &data
 
     quickSort(distances, 0, distances.size() - 1);
 
-    // sort function needed
-
     vector<int> neighbors;
     for (int i = 0; i < k && i < distances.size(); i++)
     {
@@ -102,14 +100,14 @@ void KNNImputer::transform(vector<vector<double>> &data)
     {
         for (int j = 0; j < numCols; j++)
         {
-            if (data[i][j] == missingValue)
+            if (isnan(data[i][j]))
             {
                 vector<int> neighbors = findKNearestNeighbors(data, i);
                 double sum = 0.0;
                 int count = 0;
                 for (int neighborIndex : neighbors)
                 {
-                    if (data[neighborIndex][j] != missingValue)
+                    if (!isnan(data[neighborIndex][j]))
                     {
                         sum += data[neighborIndex][j];
                         count++;

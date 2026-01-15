@@ -201,3 +201,13 @@ bool Queue::isFull()
 {
     return rearIndex == capacity - 1;
 }
+void dropColumn(vector<vector<string>> &data, int colIndex)
+{
+    for (auto &row : data)
+    {
+        if (colIndex < row.size())
+        {
+            row.erase(row.begin() + colIndex);
+        }
+    }
+}

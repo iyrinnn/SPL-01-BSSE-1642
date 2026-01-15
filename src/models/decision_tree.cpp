@@ -1,6 +1,15 @@
 #include "../../include/models/decision_tree.h"
 #include "../../include/models/criterion.h"
 
+DecisionTree::DecisionTree(int depth, int minSamplesSplit)
+{
+    root = nullptr;
+    max_depth = depth;
+    min_sample_split = minSamplesSplit;
+    criterion = "mse"; 
+    use_feature_subset = false;
+}
+
 DecisionTree::Node *DecisionTree::buildTree(vector<vector<double>> &X, const vector<double> &y, int depth)
 {
     if (stoppingCriteria(depth, y.size()))
@@ -59,6 +68,13 @@ void DecisionTree::findBestSplit(vector<vector<double>> &X, const vector<double>
                                  int &bestFeature, double &bestThreshold)
 {
 
+    
+    if (use_feature_subset && !feature_subset.empty())
+    {
+        findBestSplit(X, y, feature_subset, bestFeature, bestThreshold);
+        return;
+    }
+
     double bestScore = 10e9;
 
     Criterion *crit = nullptr;
@@ -70,7 +86,7 @@ void DecisionTree::findBestSplit(vector<vector<double>> &X, const vector<double>
         crit = new Gini();
     else if (criterion == "entropy")
         crit = new Entropy();
-    // if criterion not recognized, default to MSE ...or something we need a else statement here
+    // add Poisson.
 
     for (int featureIndex = 0; featureIndex < X[0].size(); featureIndex++)
     {
@@ -123,6 +139,55 @@ void DecisionTree::findBestSplit(vector<vector<double>> &X, const vector<double>
     delete crit;
 }
 
+void DecisionTree::findBestSplit(
+    vector<vector<double>> &X,
+    const vector<double> &y,
+    const vector<int> &feature_indices,
+    int &bestFeature,
+    double &bestThreshold)
+{
+    double bestScore = 1e18;
+
+    Criterion *crit = new MSE();
+
+    for (int featureIndex : feature_indices)
+    {
+        vector<double> uniqueValues;
+        for (int i = 0; i < X.size(); i++)
+            uniqueValues.push_back(X[i][featureIndex]);
+
+        for (double threshold : uniqueValues)
+        {
+            vector<double> leftY, rightY;
+
+            for (int i = 0; i < X.size(); i++)
+            {
+                if (X[i][featureIndex] <= threshold)
+                    leftY.push_back(y[i]);
+                else
+                    rightY.push_back(y[i]);
+            }
+
+            if (leftY.empty() || rightY.empty())
+                continue;
+
+            double score =
+                (leftY.size() * crit->impurity(leftY) +
+                 rightY.size() * crit->impurity(rightY)) /
+                y.size();
+
+            if (score < bestScore)
+            {
+                bestScore = score;
+                bestFeature = featureIndex;
+                bestThreshold = threshold;
+            }
+        }
+    }
+
+    delete crit;
+}
+
 double DecisionTree::leafValue(const vector<double> &y)
 {
     Criterion *crit = nullptr;
@@ -150,6 +215,15 @@ bool DecisionTree::stoppingCriteria(int depth, int numSamples)
 
 void DecisionTree::fit(vector<vector<double>> &X, const vector<double> &y)
 {
+    use_feature_subset = false;
+    feature_subset.clear();
+    root = buildTree(X, y, 0);
+}
+
+void DecisionTree::fit(vector<vector<double>> &X, const vector<double> &y, const vector<int> &feature_indices)
+{
+    feature_subset = feature_indices;
+    use_feature_subset = true;
     root = buildTree(X, y, 0);
 }
 

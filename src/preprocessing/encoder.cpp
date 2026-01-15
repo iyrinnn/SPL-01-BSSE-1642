@@ -1,43 +1,29 @@
 #include "../include/preprocessing/encoder.h"
+#include <map>
 
 void Encoder::labelEncode(vector<vector<string>> &data, const vector<int> &categoricalCols)
 {
-    vector<string> uniqueValues;
-
+    
     for (auto colIndex : categoricalCols)
     {
+        map<string, int> valueToLabel;
+        int labelCounter = 0;
+
+        
         for (auto &row : data)
         {
             string value = row[colIndex];
-            bool found = false;
-            for (const auto &uniqueValue : uniqueValues)
+            if (valueToLabel.find(value) == valueToLabel.end())
             {
-                if (uniqueValue == value)
-                {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found)
-            {
-                uniqueValues.push_back(value);
+                valueToLabel[value] = labelCounter++;
             }
         }
-    }
 
-    for (auto &row : data)
-    {
-        for (auto colIndex : categoricalCols)
+        
+        for (auto &row : data)
         {
             string value = row[colIndex];
-            for (int i = 0; i < uniqueValues.size(); ++i)
-            {
-                if (uniqueValues[i] == value)
-                {
-                    row[colIndex] = to_string(i);
-                    break;
-                }
-            }
+            row[colIndex] = to_string(valueToLabel[value]);
         }
     }
 }

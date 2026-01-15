@@ -12,6 +12,7 @@ void quickSort(vector<int> &arr, int st, int end);
 void quickSort(vector<double> &arr, int st, int end);
 void quickSort(vector<pair<double, int>> &arr, int st, int end);
 vector<string> split(const string &s, char delimiter);
+void dropColumn(vector<vector<string>> &data, int colIndex);
 
 class Stack
 {

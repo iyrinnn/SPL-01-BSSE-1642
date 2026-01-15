@@ -6,8 +6,9 @@ using namespace std;
 class Criterion
 {
 public:
-    virtual double impurity(const vector<double> &targets);
-    virtual double leaf_value(const vector<double> &targets);
+    virtual ~Criterion() = default;
+    virtual double impurity(const vector<double> &targets) = 0;
+    virtual double leaf_value(const vector<double> &targets) = 0;
 };
 
 class Gini : public Criterion
